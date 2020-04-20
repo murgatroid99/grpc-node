@@ -55,7 +55,7 @@ const INTERCEPTOR_SYMBOL = Symbol();
 const INTERCEPTOR_PROVIDER_SYMBOL = Symbol();
 const CALL_INVOCATION_TRANSFORMER_SYMBOL = Symbol();
 
-export interface UnaryCallback<ResponseType> {
+export interface requestCallback<ResponseType> {
   (err: ServiceError | null, value?: ResponseType): void;
 }
 
@@ -82,7 +82,7 @@ export interface CallProperties<RequestType, ResponseType> {
   channel: Channel;
   methodDefinition: ClientMethodDefinition<RequestType, ResponseType>;
   callOptions: CallOptions;
-  callback?: UnaryCallback<ResponseType>;
+  callback?: requestCallback<ResponseType>;
 }
 
 export interface CallInvocationTransformer {
@@ -190,13 +190,13 @@ export class Client {
   }
 
   private checkOptionalUnaryResponseArguments<ResponseType>(
-    arg1: Metadata | CallOptions | UnaryCallback<ResponseType>,
-    arg2?: CallOptions | UnaryCallback<ResponseType>,
-    arg3?: UnaryCallback<ResponseType>
+    arg1: Metadata | CallOptions | requestCallback<ResponseType>,
+    arg2?: CallOptions | requestCallback<ResponseType>,
+    arg3?: requestCallback<ResponseType>
   ): {
     metadata: Metadata;
     options: CallOptions;
-    callback: UnaryCallback<ResponseType>;
+    callback: requestCallback<ResponseType>;
   } {
     if (arg1 instanceof Function) {
       return { metadata: new Metadata(), options: {}, callback: arg1 };
@@ -227,7 +227,7 @@ export class Client {
     argument: RequestType,
     metadata: Metadata,
     options: CallOptions,
-    callback: UnaryCallback<ResponseType>
+    callback: requestCallback<ResponseType>
   ): ClientUnaryCall;
   makeUnaryRequest<RequestType, ResponseType>(
     method: string,
@@ -235,7 +235,7 @@ export class Client {
     deserialize: (value: Buffer) => ResponseType,
     argument: RequestType,
     metadata: Metadata,
-    callback: UnaryCallback<ResponseType>
+    callback: requestCallback<ResponseType>
   ): ClientUnaryCall;
   makeUnaryRequest<RequestType, ResponseType>(
     method: string,
@@ -243,23 +243,23 @@ export class Client {
     deserialize: (value: Buffer) => ResponseType,
     argument: RequestType,
     options: CallOptions,
-    callback: UnaryCallback<ResponseType>
+    callback: requestCallback<ResponseType>
   ): ClientUnaryCall;
   makeUnaryRequest<RequestType, ResponseType>(
     method: string,
     serialize: (value: RequestType) => Buffer,
     deserialize: (value: Buffer) => ResponseType,
     argument: RequestType,
-    callback: UnaryCallback<ResponseType>
+    callback: requestCallback<ResponseType>
   ): ClientUnaryCall;
   makeUnaryRequest<RequestType, ResponseType>(
     method: string,
     serialize: (value: RequestType) => Buffer,
     deserialize: (value: Buffer) => ResponseType,
     argument: RequestType,
-    metadata: Metadata | CallOptions | UnaryCallback<ResponseType>,
-    options?: CallOptions | UnaryCallback<ResponseType>,
-    callback?: UnaryCallback<ResponseType>
+    metadata: Metadata | CallOptions | requestCallback<ResponseType>,
+    options?: CallOptions | requestCallback<ResponseType>,
+    callback?: requestCallback<ResponseType>
   ): ClientUnaryCall {
     const checkedArguments = this.checkOptionalUnaryResponseArguments<
       ResponseType
@@ -347,35 +347,35 @@ export class Client {
     deserialize: (value: Buffer) => ResponseType,
     metadata: Metadata,
     options: CallOptions,
-    callback: UnaryCallback<ResponseType>
+    callback: requestCallback<ResponseType>
   ): ClientWritableStream<RequestType>;
   makeClientStreamRequest<RequestType, ResponseType>(
     method: string,
     serialize: (value: RequestType) => Buffer,
     deserialize: (value: Buffer) => ResponseType,
     metadata: Metadata,
-    callback: UnaryCallback<ResponseType>
+    callback: requestCallback<ResponseType>
   ): ClientWritableStream<RequestType>;
   makeClientStreamRequest<RequestType, ResponseType>(
     method: string,
     serialize: (value: RequestType) => Buffer,
     deserialize: (value: Buffer) => ResponseType,
     options: CallOptions,
-    callback: UnaryCallback<ResponseType>
+    callback: requestCallback<ResponseType>
   ): ClientWritableStream<RequestType>;
   makeClientStreamRequest<RequestType, ResponseType>(
     method: string,
     serialize: (value: RequestType) => Buffer,
     deserialize: (value: Buffer) => ResponseType,
-    callback: UnaryCallback<ResponseType>
+    callback: requestCallback<ResponseType>
   ): ClientWritableStream<RequestType>;
   makeClientStreamRequest<RequestType, ResponseType>(
     method: string,
     serialize: (value: RequestType) => Buffer,
     deserialize: (value: Buffer) => ResponseType,
-    metadata: Metadata | CallOptions | UnaryCallback<ResponseType>,
-    options?: CallOptions | UnaryCallback<ResponseType>,
-    callback?: UnaryCallback<ResponseType>
+    metadata: Metadata | CallOptions | requestCallback<ResponseType>,
+    options?: CallOptions | requestCallback<ResponseType>,
+    callback?: requestCallback<ResponseType>
   ): ClientWritableStream<RequestType> {
     const checkedArguments = this.checkOptionalUnaryResponseArguments<
       ResponseType
