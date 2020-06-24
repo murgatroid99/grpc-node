@@ -672,7 +672,12 @@ export class Http2CallStream implements Call {
       message,
       flags: context.flags,
     };
-    const cb: WriteCallback = context.callback ?? (() => {});
+    const cb: WriteCallback = (error?: Error | null) => {
+      this.trace('HTTP2 stream write callback called with error ' + error?.message);
+      if (context.callback) {
+        context.callback(error);
+      }
+    }
     this.isWriteFilterPending = true;
     this.filterStack.sendMessage(Promise.resolve(writeObj)).then((message) => {
       this.isWriteFilterPending = false;

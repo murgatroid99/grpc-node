@@ -457,6 +457,7 @@ export class Http2ServerCallStream<
       let totalLength = 0;
 
       stream.on('data', (data: Buffer) => {
+        trace(`receive HTTP2 data frame of length ${data.length}`);
         chunks.push(data);
         totalLength += data.byteLength;
       });
@@ -474,6 +475,8 @@ export class Http2ServerCallStream<
             });
             resolve();
           }
+
+          trace(`received unary message of length ${requestBytes.length}`);
 
           resolve(this.deserializeMessage(requestBytes));
         } catch (err) {
@@ -527,6 +530,8 @@ export class Http2ServerCallStream<
 
     try {
       const response = this.serializeMessage(value!);
+
+      trace(`send unary message of length ${response.length}`);
 
       this.write(response);
       this.sendStatus({ code: Status.OK, details: 'OK', metadata });
@@ -615,6 +620,7 @@ export class Http2ServerCallStream<
     }
 
     this.sendMetadata();
+    trace(`send streaming message of length ${chunk.length}`);
     return this.stream.write(chunk);
   }
 
@@ -637,6 +643,7 @@ export class Http2ServerCallStream<
     const decoder = new StreamDecoder();
 
     this.stream.on('data', async (data: Buffer) => {
+      trace(`receive streaming HTTP2 data frame of length ${data.length}`);
       const messages = decoder.write(data);
 
       for (const message of messages) {
@@ -650,6 +657,7 @@ export class Http2ServerCallStream<
           });
           return;
         }
+        trace(`receive streaming message of length ${message.length}`);
         this.pushOrBufferMessage(readable, message);
       }
     });
