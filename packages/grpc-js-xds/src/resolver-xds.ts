@@ -385,7 +385,8 @@ class XdsResolver implements Resolver {
             methodConfig: {name: [], timeout: action.getTimeout()},
             onCommitted: onCommitted,
             pickInformation: {cluster: clusterName},
-            status: status.OK
+            status: status.OK,
+            extraFilterFactories: []
           };
         }
       }
@@ -393,7 +394,8 @@ class XdsResolver implements Resolver {
         methodConfig: {name: []},
         // cluster won't be used here, but it's set because of some TypeScript weirdness
         pickInformation: {cluster: ''},
-        status: status.UNAVAILABLE
+        status: status.UNAVAILABLE,
+        extraFilterFactories: []
       };
     };
     trace('Created ConfigSelector with configuration:');
