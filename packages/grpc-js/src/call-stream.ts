@@ -524,6 +524,7 @@ export class Http2CallStream implements Call {
         }
 
         if (flags & http2.constants.NGHTTP2_FLAG_END_STREAM) {
+          this.listener?.onReceiveMetadata(new Metadata());
           this.handleTrailers(headers);
         } else {
           let metadata: Metadata;
